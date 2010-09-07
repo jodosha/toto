@@ -113,6 +113,9 @@ module Toto
               context[article(route), :article]
             else http 400
           end
+        elsif @config[:prefix] =~ %r{#{route.first}}
+          route.shift
+          context[article(route), :article]
         elsif respond_to?(path)
           context[send(path, type), path.to_sym]
         elsif (repo = @config[:github][:repos].grep(/#{path}/).first) &&
