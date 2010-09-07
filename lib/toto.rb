@@ -97,7 +97,7 @@ module Toto
       self[:root]
     end
 
-    def go route, type = :html, env
+    def go route, type = :html, env = {}
       route << self./ if route.empty?
       type, path = type =~ /html|xml|json/ ? type.to_sym : :html, route.join('/')
       context = lambda do |data, page|
@@ -338,7 +338,8 @@ module Toto
       path, mime = @request.path_info.split('.')
       route = (path || '/').split('/').reject {|i| i.empty? }
 
-      response = @site.go(route, *(mime ? mime : []), env)
+      mime = *(mime ? mime : [])
+      response = @site.go(route, mime, env)
 
       @response.body = [response[:body]]
       @response['Content-Length'] = response[:body].length.to_s unless response[:body].empty?
